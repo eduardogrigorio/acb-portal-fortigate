@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora de Horas Trabalhadas</title>
+  <style>
+    :root {
+      --primary: #2d8971; /* Verde principal */
+      --secondary: #4CAF50; /* Verde secundário */
+      --light: #f5f5f5;
+      --dark: #333;
+      --bg: #ffffff;
+      --text: #333;
+      --card-bg: #fafafa;
+      --shadow: rgba(0, 0, 0, 0.05);
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--light);
+      color: var(--text);
+      padding: 2rem;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background-color: var(--bg);
+      border-radius: 10px;
+      box-shadow: 0 4px 15px var(--shadow);
+      padding: 2rem;
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      background-color: var(--primary);
+      color: white;
+      font-weight: bold;
+    }
+
+    input[type="date"], input[type="time"] {
+      padding: 8px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .total {
+      font-weight: bold;
+      color: var(--primary);
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #1e5e4f;
+    }
+
+    #resultado {
+      margin-top: 20px;
+      font-size: 1.1rem;
+      text-align: center;
+      font-weight: bold;
+      color: var(--primary);
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .actions button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .actions button:hover {
+      background-color: #1e5e4f;
+    }
+
+    @media (max-width: 600px) {
+      th, td {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>📅 Calculadora de Horas Trabalhadas</h2>
+
+    <table id="tabela">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Entrada</th>
+          <th>Ida Almoço</th>
+          <th>Volta Almoço</th>
+          <th>Saída</th>
+          <th>Total</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="date" class="data" value="2025-04-30"></td>
+          <td><input type="time" class="entrada1" onkeydown="focoProximoCampo(event)"></td>
+          <td><input type="time" class="saida1" onkeydown="focoProximoCampo(event)"></td>
+          <td><input type="time" class="entrada2" onkeydown="focoProximoCampo(event)"></td>
+          <td><input type="time" class="saida2" onkeydown="focoProximoCampo(event)"></td>
+          <td class="total">-</td>
+          <td class="actions"><button onclick="removerLinha(this)">🗑️ Remover</button></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="buttons">
+      <button onclick="adicionarLinha()">➕ Adicionar Linha</button>
+      <button onclick="calcularHoras()">⏰ Calcular Horas</button>
+      <button onclick="gerarPDF()">📄 Gerar PDF</button>
+    </div>
+
+    <div id="resultado"></div>
+  </div>
+
+  <!-- Biblioteca jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    function adicionarLinha() {
+      const tbody = document.querySelector('#tabela tbody');
+      const ultimaData = tbody.rows[tbody.rows.length - 1].querySelector('.data').value;
+      const novaData = new Date(ultimaData);
+      novaData.setDate(novaData.getDate() + 1);
+      const dataFormatada = novaData.toISOString().split('T')[0];
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input type="date" class="data" value="${dataFormatada}"></td>
+        <td><input type="time" class="entrada1" onkeydown="focoProximoCampo(event)"></td>
+        <td><input type="time" class="saida1" onkeydown="focoProximoCampo(event)"></td>
+        <td><input type="time" class="entrada2" onkeydown="focoProximoCampo(event)"></td>
+        <td><input type="time" class="saida2" onkeydown="focoProximoCampo(event)"></td>
+        <td class="total">-</td>
+        <td class="actions"><button onclick="removerLinha(this)">🗑️ Remover</button></td>
+      `;
+      tbody.appendChild(tr);
+    }
+
+    function removerLinha(botao) {
+      const linha = botao.parentNode.parentNode;
+      linha.remove();
+    }
+
+    function focoProximoCampo(e) {
+      if (e.key === "Enter") {
+        const campos = document.querySelectorAll('input[type="time"], input[type="date"]');
+        const index = Array.from(campos).indexOf(e.target);
+        if (index < campos.length - 1) {
+          campos[index + 1].focus();
+        }
+      }
+    }
+
+    function calcularHoras() {
+      const linhas = document.querySelectorAll('#tabela tbody tr');
+      let totalSegundosGeral = 0;
+
+      linhas.forEach(linha => {
+        const entrada1 = linha.querySelector('.entrada1').value;
+        const saida1 = linha.querySelector('.saida1').value;
+        const entrada2 = linha.querySelector('.entrada2').value;
+        const saida2 = linha.querySelector('.saida2').value;
+
+        if (!entrada1 || !saida1) {
+          linha.querySelector('.total').innerText = 'Preencha os campos obrigatórios.';
+          return;
+        }
+
+        function getSegundos(hora) {
+          const [h, m] = hora.split(":").map(Number);
+          return h * 3600 + m * 60;
+        }
+
+        const turno1 = getSegundos(saida1) - getSegundos(entrada1);
+        const turno2 = entrada2 && saida2 ? getSegundos(saida2) - getSegundos(entrada2) : 0;
+        const totalSegundos = turno1 + turno2;
+        totalSegundosGeral += totalSegundos;
+
+        const horas = Math.floor(totalSegundos / 3600);
+        const minutos = Math.floor((totalSegundos % 3600) / 60);
+
+        linha.querySelector('.total').innerText = `${horas}h ${minutos}min`;
+      });
+
+      const horasGeral = Math.floor(totalSegundosGeral / 3600);
+      const minutosGeral = Math.floor((totalSegundosGeral % 3600) / 60);
+
+      document.getElementById('resultado').innerText =
+        `✅ Total trabalhado: ${horasGeral}h ${minutosGeral}min`;
+    }
+
+    function gerarPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const resultado = document.getElementById('resultado').innerText;
+
+      if (!resultado.includes("Total")) {
+        alert('⚠️ Calcule as horas antes de gerar o PDF.');
+        return;
+      }
+
+      doc.setFontSize(16);
+      doc.text("Calculadora de Horas", 10, 10);
+      doc.setFontSize(12);
+      doc.text(resultado, 10, 20);
+
+      const linhas = document.querySelectorAll('#tabela tbody tr');
+      let y = 30;
+      linhas.forEach(linha => {
+        const data = linha.querySelector('.data').value;
+        const entrada1 = linha.querySelector('.entrada1').value;
+        const saida1 = linha.querySelector('.saida1').value;
+        const entrada2 = linha.querySelector('.entrada2').value;
+        const saida2 = linha.querySelector('.saida2').value;
+        const total = linha.querySelector('.total').innerText;
+
+        doc.text(`Data: ${data}`, 10, y);
+        doc.text(`Entrada: ${entrada1}`, 50, y);
+        doc.text(`Ida Almoço: ${saida1}`, 90, y);
+        doc.text(`Volta Almoço: ${entrada2}`, 130, y);
+        doc.text(`Saída: ${saida2}`, 170, y);
+        doc.text(`Total: ${total}`, 210, y);
+        y += 10;
+      });
+
+      doc.save("horas_trabalhadas.pdf");
+    }
+  </script>
+</body>
+</html>
