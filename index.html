@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Portal FortiGate - CREDCESTA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <style>
+        :root {
+            --primary: #27ae60; /* Verde principal */
+            --secondary: #2ecc71;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #27ae60;
+            --warning: #f1c40f;
+            --danger: #e74c3c;
+            --bg-light: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-color: #333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .search-filters {
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #259b54;
+        }
+
+        .fortigates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .fortigate-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .fortigate-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-footer {
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-top: 1px solid #eee;
+        }
+
+        .info-row {
+            display: flex;
+            margin-bottom: 0.75rem;
+        }
+
+        .info-label {
+            font-weight: 600;
+            min-width: 120px;
+            color: var(--dark);
+        }
+
+        .info-value {
+            flex: 1;
+        }
+
+        .access-btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+            background-color: var(--success);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .access-btn:hover {
+            background-color: #219653;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+            gap: 0.5rem;
+        }
+
+        .page-btn {
+            padding: 0.5rem 1rem;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .page-btn.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .search-filters {
+                flex-direction: column;
+            }
+            .filter-group {
+                width: 100%;
+            }
+            .fortigates-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><i class="fas fa-shield-alt"></i> Portal de Acesso aos FortiGates</h1>
+        <p>Acesso rápido aos dispositivos da rede CREDCESTA</p>
+    </header>
+    <div class="container">
+        <div class="search-filters">
+            <div class="filter-group">
+                <label for="search"><i class="fas fa-search"></i> Buscar</label>
+                <input type="text" id="search" placeholder="Local, provedor ou IP...">
+            </div>
+            <div class="filter-group">
+                <label for="state"><i class="fas fa-map-marker-alt"></i> Estado</label>
+                <select id="state">
+                    <option value="">Todos</option>
+                    <option value="BA">Bahia</option>
+                    <option value="SP">São Paulo</option>
+                    <option value="RJ">Rio de Janeiro</option>
+                    <option value="MG">Minas Gerais</option>
+                    <!-- outros estados -->
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="provider"><i class="fas fa-network-wired"></i> Provedor</label>
+                <select id="provider">
+                    <option value="">Todos</option>
+                    <option value="VIVO">VIVO</option>
+                    <option value="ITS">ITS</option>
+                    <option value="SPEEDZONE">SPEEDZONE</option>
+                    <option value="BR DIGITAL">BR DIGITAL</option>
+                    <!-- outros provedores -->
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="structure"><i class="fas fa-building"></i> Estrutura</label>
+                <select id="structure">
+                    <option value="">Todas</option>
+                    <option value="LOJA">LOJA</option>
+                    <option value="CALLCENTER">CALLCENTER</option>
+                    <option value="ESCRITÓRIO">ESCRITÓRIO</option>
+                    <option value="BACKOFFICE">BACKOFFICE</option>
+                </select>
+            </div>
+            <button id="filter-btn"><i class="fas fa-filter"></i> Filtrar</button>
+            <button id="reset-btn"><i class="fas fa-undo"></i> Limpar</button>
+        </div>
+
+        <div class="fortigates-grid" id="fortigates-grid">
+            <!-- Cards serão inseridos aqui dinamicamente -->
+        </div>
+
+        <div class="pagination" id="pagination">
+            <!-- Paginação será gerada aqui -->
+        </div>
+    </div>
+
+    <script>
+        const data = [
+            // Aqui você pode inserir todos os 75 registros como array de objetos
+            {
+                id: "1",
+                descricao: "LOJA/CALLCENTER-CREDCESTA-CENTRO-FEIRA_DE_SANTANA-BA",
+                nome: "LINK_ALGAR_CREDCESTA (FEIRA DE SANTANA-BA)",
+                ip: "177.69.98.97:4040",
+                provedor: "ALGAR",
+                localizacao: "FEIRA DE SANTANA-BA",
+                estrutura: "LOJA/CALLCENTER",
+                convenio: "CREDCESTA"
+            },
+            // Adicionar mais objetos com base no seu arquivo txt
+        ];
+
+        const itemsPerPage = 10;
+        let currentPage = 1;
+
+        function renderCards(page = 1) {
+            const grid = document.getElementById('fortigates-grid');
+            grid.innerHTML = '';
+            const start = (page - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const paginatedData = data.slice(start, end);
+
+            paginatedData.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'fortigate-card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h3>${item.descricao}</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-row">
+                            <span class="info-label">Nome:</span>
+                            <span class="info-value">${item.nome}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Localização:</span>
+                            <span class="info-value">${item.localizacao}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Provedor:</span>
+                            <span class="info-value">${item.provedor}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Estrutura:</span>
+                            <span class="info-value">${item.estrutura}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Convênio:</span>
+                            <span class="info-value">${item.convenio}</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="https://${item.ip}/login" class="access-btn" target="_blank">Acessar FortiGate</a>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function setupPagination() {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+            const totalPages = Math.ceil(data.length / itemsPerPage);
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'page-btn';
+                if (i === currentPage) btn.classList.add('active');
+                btn.innerText = i;
+                btn.addEventListener('click', () => {
+                    currentPage = i;
+                    renderCards(currentPage);
+                    setupPagination();
+                });
+                pagination.appendChild(btn);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCards(currentPage);
+            setupPagination();
+
+            document.getElementById('filter-btn').addEventListener('click', () => {
+                const search = document.getElementById('search').value.toLowerCase();
+                const state = document.getElementById('state').value;
+                const provider = document.getElementById('provider').value;
+                const structure = document.getElementById('structure').value;
+
+                const filtered = data.filter(item => {
+                    return (
+                        item.descricao.toLowerCase().includes(search) ||
+                        item.provedor.toLowerCase().includes(search) ||
+                        item.ip.includes(search)
+                    ) &&
+                    (!state || item.localizacao.endsWith(`-${state}`)) &&
+                    (!provider || item.provedor === provider) &&
+                    (!structure || item.estrutura === structure);
+                });
+
+                // Re-renderizando cards filtrados
+                const grid = document.getElementById('fortigates-grid');
+                grid.innerHTML = '';
+                filtered.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'fortigate-card';
+                    card.innerHTML = `
+                        <div class="card-header">
+                            <h3>${item.descricao}</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="info-row">
+                                <span class="info-label">Nome:</span>
+                                <span class="info-value">${item.nome}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Localização:</span>
+                                <span class="info-value">${item.localizacao}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Provedor:</span>
+                                <span class="info-value">${item.provedor}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Estrutura:</span>
+                                <span class="info-value">${item.estrutura}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Convênio:</span>
+                                <span class="info-value">${item.convenio}</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <a href="https://${item.ip}/login" class="access-btn" target="_blank">Acessar FortiGate</a>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            });
+
+            document.getElementById('reset-btn').addEventListener('click', () => {
+                document.getElementById('search').value = '';
+                document.getElementById('state').value = '';
+                document.getElementById('provider').value = '';
+                document.getElementById('structure').value = '';
+                currentPage = 1;
+                renderCards(currentPage);
+                setupPagination();
+            });
+        });
+    </script>
+</body>
+</html>
