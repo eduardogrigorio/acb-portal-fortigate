@@ -146,12 +146,12 @@
             try {
                 // Replace with your actual Web App URL
                 const response = await fetch('https://script.google.com/macros/s/AKfycbxfkPqZlfyS4k3Le6gVCnfxbZtT4eybmnf8V848QDZQ7VRle7EO9rOJpHLMsEUocRd2/exec', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
+                  method: 'POST',
+                  headers: {
+                'Content-Type': 'application/json'
+          },
+  body: JSON.stringify(formData)
+});
                 
                 const data = await response.json();
                 
