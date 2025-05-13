@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fale Conosco | Sua Empresa</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --text: #2b2d42;
+            --text-light: #8d99ae;
+            --border: #e9ecef;
+            --success: #4cc9f0;
+            --error: #f72585;
+            --radius: 12px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            line-height: 1.5;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .form-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .form-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, #4361ee, #4cc9f0);
+        }
+        
+        .form-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .form-header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+        
+        .form-header p {
+            color: var(--text-light);
+            font-size: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .required {
+            color: var(--error);
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-family: inherit;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 16px;
+        }
+        
+        .help-text {
+            display: block;
+            margin-top: 6px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        
+        .error-message {
+            color: var(--error);
+            font-size: 13px;
+            margin-top: 6px;
+            display: none;
+        }
+        
+        .form-actions {
+            margin-top: 32px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        .loading-spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            display: none;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .form-footer {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        
+        .form-footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Estado de sucesso */
+        .success-state {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+        
+        .success-icon {
+            width: 72px;
+            height: 72px;
+            background-color: var(--success);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 36px;
+            margin: 0 auto 24px;
+        }
+        
+        .success-state h2 {
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+        
+        .success-state p {
+            margin-bottom: 8px;
+        }
+        
+        #protocolo {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .secondary-button {
+            background-color: white;
+            color: var(--primary);
+            border: 1px solid var(--border);
+            margin-top: 24px;
+        }
+        
+        .secondary-button:hover {
+            background-color: #f8f9fa;
+        }
+        
+        /* Validação */
+        input:invalid, textarea:invalid, select:invalid {
+            border-color: var(--error);
+        }
+        
+        /* Responsivo */
+        @media (max-width: 640px) {
+            .form-card {
+                padding: 30px 20px;
+            }
+            
+            .form-header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-card">
+            <div class="form-header">
+                <h1>Fale Conosco</h1>
+                <p>Preencha o formulário abaixo e nossa equipe entrará em contato em breve.</p>
+            </div>
+            
+            <form method="post" id="form-contato" name="formulario-contato" novalidate>
+                <div class="form-group">
+                    <label for="nome">Nome completo <span class="required">*</span></label>
+                    <input type="text" id="nome" name="nome" placeholder="Seu nome" required>
+                    <div class="error-message" id="nome-error">Por favor, insira seu nome completo</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">E-mail <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+                    <div class="error-message" id="email-error">Por favor, insira um e-mail válido</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="mensagem">Mensagem <span class="required">*</span></label>
+                    <textarea id="mensagem" name="mensagem" placeholder="Como podemos ajudar?" required></textarea>
+                    <div class="error-message" id="mensagem-error">Por favor, escreva sua mensagem</div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" id="enviar">
+                        <span class="button-text">Enviar Mensagem</span>
+                        <span class="loading-spinner"></span>
+                    </button>
+                </div>
+                
+                <div class="form-footer">
+                    <p>Ao enviar este formulário, você concorda com nossa <a href="#">Política de Privacidade</a>.</p>
+                </div>
+            </form>
+            
+            <div class="success-state" id="success-message">
+                <div class="success-icon">✓</div>
+                <h2>Mensagem enviada com sucesso!</h2>
+                <p>Obrigado pelo seu contato. Nossa equipe responderá em breve.</p>
+                <p>Número do protocolo: <span id="protocolo">123456</span></p>
+                <button id="new-message" class="secondary-button">Enviar nova mensagem</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('form-contato');
+            const successMessage = document.getElementById('success-message');
+            const submitBtn = document.getElementById('enviar');
+            const spinner = submitBtn.querySelector('.loading-spinner');
+            const googleScriptUrl = 'https://script.google.com/macros/s/AKfycbz2didG75ggngJRvHrnTI-SuRiOZ7BJJHvj6OL807SIC3fuQWMCzM2QqySOqYZnw81h/exec';
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Validação dos campos
+                let isValid = true;
+                const requiredFields = form.querySelectorAll('[required]');
+                
+                // Validação de nome (permite acentos e espaços)
+                const nome = document.getElementById('nome');
+                const nomeRegex = /^[a-zA-ZÀ-ÿ\s']+$/;
+                if (!nome.value.trim() || !nomeRegex.test(nome.value)) {
+                    nome.style.borderColor = 'var(--error)';
+                    document.getElementById('nome-error').textContent = 'Por favor, insira um nome válido (sem caracteres especiais)';
+                    document.getElementById('nome-error').style.display = 'block';
+                    isValid = false;
+                } else {
+                    nome.style.borderColor = 'var(--border)';
+                    document.getElementById('nome-error').style.display = 'none';
+                }
+                
+                // Validação de e-mail
+                const email = document.getElementById('email');
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!email.value.trim() || !emailRegex.test(email.value)) {
+                    email.style.borderColor = 'var(--error)';
+                    document.getElementById('email-error').textContent = 'Por favor, insira um e-mail válido';
+                    document.getElementById('email-error').style.display = 'block';
+                    isValid = false;
+                } else {
+                    email.style.borderColor = 'var(--border)';
+                    document.getElementById('email-error').style.display = 'none';
+                }
+                
+                // Validação de mensagem
+                const mensagem = document.getElementById('mensagem');
+                if (!mensagem.value.trim()) {
+                    mensagem.style.borderColor = 'var(--error)';
+                    document.getElementById('mensagem-error').style.display = 'block';
+                    isValid = false;
+                } else {
+                    mensagem.style.borderColor = 'var(--border)';
+                    document.getElementById('mensagem-error').style.display = 'none';
+                }
+                
+                if (!isValid) return;
+                
+                // Gerar número do protocolo
+                const numeroProtocolo = Math.floor(100000 + Math.random() * 900000);
+                
+                // Configurar o FormData
+                const formData = new FormData(form);
+                formData.append('protocolo', numeroProtocolo);
+                
+                // Configurar timeout
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 segundos
+                
+                // Simular envio
+                submitBtn.disabled = true;
+                spinner.style.display = 'block';
+                submitBtn.querySelector('.button-text').textContent = 'Enviando...';
+                
+                // Enviar dados para o Google Apps Script
+                fetch(googleScriptUrl, {
+                    method: 'POST',
+                    body: new URLSearchParams(formData),
+                    signal: controller.signal
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro na rede');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // Exibe mensagem de sucesso
+                        form.style.display = 'none';
+                        successMessage.style.display = 'block';
+                        document.getElementById('protocolo').textContent = numeroProtocolo;
+                    } else {
+                        throw new Error(data.error || 'Erro ao processar o formulário');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    alert('Ocorreu um erro ao enviar os dados: ' + error.message);
+                })
+                .finally(() => {
+                    submitBtn.disabled = false;
+                    spinner.style.display = 'none';
+                    submitBtn.querySelector('.button-text').textContent = 'Enviar Mensagem';
+                    clearTimeout(timeoutId);
+                });
+            });
+            
+            // Botão para nova mensagem
+            document.getElementById('new-message').addEventListener('click', function() {
+                form.style.display = 'block';
+                successMessage.style.display = 'none';
+                form.reset();
+            });
+        });
+    </script>
+</body>
+</html>
